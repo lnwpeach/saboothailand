@@ -40,11 +40,11 @@
 	for($i=1;$i<=12;$i++)
 	{
 		$sel = "";
-		if($_POST['month'] == $i)
+		if(isset($_POST['month']) && $_POST['month'] == $i)
 			$sel = "selected";
 		else if(!isset($_POST['month']) && date('n') == $i)
 			$sel = "selected";
-		echo "<option value=\"{$i}\" $sel>{$mthai[$m]}</option>";
+		echo "<option value=\"{$i}\" {$sel}>{$mthai[$m]}</option>";
 		$m += 1;
 	}
 ?>
@@ -105,13 +105,14 @@
 		$emp_id = $_POST['emp_id'];
 
 		if($m) {
-			$stdate = "1 ".$meng[$m]." ".$y;
-			$eddate = $day." ".$meng[$m]." ".$y;
+			$m = sprintf('%02d', $m);
+			$stdate = "{$y}-{$m}-01";
+			$eddate = "{$y}-{$m}-{$day}";
 			$message = "สรุปยอดขาย เดือน ".$mthai[sprintf("%0d",$m)]." ปี ".$y;
 		}
 		else {
-			$stdate = "1 ".$meng[1]." ".$y;
-			$eddate = $day." ".$meng[12]." ".$y;
+			$stdate = "{$y}-01-01";;
+			$eddate = "{$y}-12-{$day}";;
 			$message = "สรุปยอดขาย ปี ".$y;
 		}
 
@@ -121,16 +122,16 @@
 		}
 	}
 	else {
-		$stdate = "1 ".$meng[date('n')]." ".date('Y');
-		$eddate = $day." ".$meng[date('n')]." ".date('Y');
+		$stdate = date('Y-m-1');
+		$eddate = date('Y-m-t');
 		$message = "สรุปยอดขาย เดือน ".$mthai[date('n')]." ปี ".date('Y');
 	}
 
 		$sql = "select sd.pro_id, sum(sd.pro_sell_qty) as qty, sum(sd.pro_sell_qty * p.pro_price) as sum from sale_detail sd join ";
 		$sql .= "product p on sd.pro_id = p.pro_id join sale s on sd.sale_id = s.sale_id where s.sale_date between '$stdate' and '$eddate' $qemp group by sd.pro_id order by sd.pro_id";
 		$query = mysqli_query($conn, $sql);
-		$rs = mysqli_fetch_array($query);
-		if($rs[0] == null)
+		$rs = mysqli_num_rows($query);
+		if($rs == 0)
 		{
 			echo "<h3 style='margin-left: 10%;color: red'>ไม่มีข้อมูล</h3>";
 		}
@@ -154,19 +155,19 @@
 			$sumtotal = 0;
 			while($rs = mysqli_fetch_array($query))
 			{
-				$sql2 = "select p.pro_name, p.pro_price from sale_detail sd join product p on sd.pro_id = p.pro_id where sd.pro_id = '".$rs["PRO_ID"]."'";
+				$sql2 = "select p.pro_name, p.pro_price from sale_detail sd join product p on sd.pro_id = p.pro_id where sd.pro_id = '".$rs["pro_id"]."'";
 				$query2 = mysqli_query($conn, $sql2);
 				$rs2 = mysqli_fetch_array($query2);
 				$num2 += 1;
-				$sumtotal += $rs["SUM"];
+				$sumtotal += $rs["sum"];
 ?>
 <tr>
 	<td align="center"><?php echo $num2;?></td>
-	<td align="center"><?php echo $rs["PRO_ID"];?></td>
-	<td align="left">&nbsp;<?php echo $rs2["PRO_NAME"];?></td>
-	<td align="right"><?php echo number_format($rs2["PRO_PRICE"],2);?></td>
-	<td align="center"><?php echo $rs["QTY"];?></td>
-	<td align="right"><?php echo number_format($rs["SUM"],2);?></td>
+	<td align="center"><?php echo $rs["pro_id"];?></td>
+	<td align="left">&nbsp;<?php echo $rs2["pro_name"];?></td>
+	<td align="right"><?php echo number_format($rs2["pro_price"],2);?></td>
+	<td align="center"><?php echo $rs["qty"];?></td>
+	<td align="right"><?php echo number_format($rs["sum"],2);?></td>
 </tr>
 <?php
 			}

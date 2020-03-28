@@ -1,10 +1,12 @@
 <?php
 	session_start();
 	ob_start();
+	include("config.php");
 	date_default_timezone_set("asia/bangkok");
 	//$db = "(DESCRIPTION=(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 202.44.47.56)(PORT = 1521)))(CONNECT_DATA=(SID=oraclesv0)))";
 	//$conn = @oci_connect("6006021410148","6006021410148",$db,"AL32UTF8") or die("Failed to connect Oracle Database");
-	$conn = mysqli_connect("localhost","root","12345678","saboothailand");
+	
+	$conn = mysqli_connect($host, $username, $password, $db);
 	mysqli_query($conn, "set character set utf8");
 
 	$meng[1] = "january";

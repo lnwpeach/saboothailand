@@ -82,13 +82,13 @@ function setFocus() {
 	$sql = "select max(sale_id)+1 as max from sale";
 	$query = mysqli_query($conn, $sql);
 	$new_sale_id = mysqli_fetch_array($query);
-	if(@$new_sale_id["MAX"] == null)
+	if(@$new_sale_id["max"] == null)
 	{
 		$sale_id = "0000001";
 	}
 	else
 	{
-		$sale_id = sprintf("%07d", $new_sale_id["MAX"]);
+		$sale_id = sprintf("%07d", $new_sale_id["max"]);
 	}
 ?>
 

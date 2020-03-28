@@ -9,7 +9,7 @@
   $reserve_id = $_POST['reserve_id'];
   $cust_id = $_POST['cust'];
 
-  $reserve_date = date("j ").$meng[date("n")].date(" Y");
+  $reserve_date = date('Y-m-d');
 
   $sql = "insert into reserve values ('".$reserve_id."','$reserve_date','".date("H:i")."','$cust_id','รอชำระเงิน')";
   $query = mysqli_query($conn, $sql) or die("Can't insert reserve = ".$sql);

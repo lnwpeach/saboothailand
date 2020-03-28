@@ -24,14 +24,14 @@
 	<br>
 <table width="700" border="1" align="center" cellpadding="2" cellspacing="0">
 <tr>
-<th colspan="5" align="center">เลขที่ใบจองสินค้า <?php echo $rs["RESERVE_ID"];?></th>
+<th colspan="5" align="center">เลขที่ใบจองสินค้า <?php echo $rs["reserve_id"];?></th>
 </tr>
 <tr>
-<th colspan="5" align="center">วันที่ <?php echo $rs["RESERVE_DATE"]?>&nbsp;&nbsp; เวลา <?php echo $rs["RESERVE_TIME"];?></th>
+<th colspan="5" align="center">วันที่ <?php echo $rs["reserve_date"]?>&nbsp;&nbsp; เวลา <?php echo $rs["reserve_time"];?></th>
 </tr>
 <tr>
-<th colspan="5" align="center">ชื่อลูกค้า <?php echo $rs["CUST_NAME"]." ".$rs["CUST_LNAME"]?>
-&nbsp;&nbsp;&nbsp;&nbsp; สถานะ <?php echo $rs['STATUS'];?></th>
+<th colspan="5" align="center">ชื่อลูกค้า <?php echo $rs["cust_name"]." ".$rs["cust_lname"]?>
+&nbsp;&nbsp;&nbsp;&nbsp; สถานะ <?php echo $rs['status'];?></th>
 </tr>
 <tr>
 <th align="center">รหัสสินค้า</th>
@@ -48,13 +48,13 @@
 	while($rs2 = mysqli_fetch_array($query2))
 	{
 		echo "<tr>";
-		echo "<td align='center'>".$rs2['PRO_ID']."</td>";
-		echo "<td align='left'> ".$rs2['PRO_NAME']."</td>";
-		echo "<td align='right'>".number_format($rs2['PRO_PRICE'],2)."</td>";
-		echo "<td align='center'>".$rs2['PRO_RESERVE_QTY']."</td>";
-		echo "<td align='right'>".number_format($rs2['TOTAL'],2)."</td>";
+		echo "<td align='center'>".$rs2['pro_id']."</td>";
+		echo "<td align='left'> ".$rs2['pro_name']."</td>";
+		echo "<td align='right'>".number_format($rs2['pro_price'],2)."</td>";
+		echo "<td align='center'>".$rs2['pro_reserve_qty']."</td>";
+		echo "<td align='right'>".number_format($rs2['total'],2)."</td>";
 		echo "</tr>";
-		$total += $rs2['PRO_PRICE'] * $rs2['PRO_RESERVE_QTY'];
+		$total += $rs2['pro_price'] * $rs2['pro_reserve_qty'];
 	}
 ?>
 <tr>

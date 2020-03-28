@@ -48,16 +48,16 @@ function setFocus() {
 	{
 		if(isset($_SESSION["strpro_id"][$i]))
 		{
-			$sql = "select * from product where PRO_ID = '".$_SESSION["strpro_id"][$i]."'";
+			$sql = "select * from product where pro_id = '".$_SESSION["strpro_id"][$i]."'";
 			$query = mysqli_query($conn, $sql);
 			$rs = mysqli_fetch_array($query);
-			$_SESSION["total"][$i] = $rs["PRO_PRICE"] * $_SESSION["strqty"][$i];
+			$_SESSION["total"][$i] = $rs["pro_price"] * $_SESSION["strqty"][$i];
 			$sumtotal += $_SESSION["total"][$i];
 
 			echo "<tr>";
 			echo "<td align='center'>".$_SESSION['strpro_id'][$i]."</td>";
-			echo "<td align='left'> ".$rs['PRO_NAME']."</td>";
-			echo "<td align='right'>".number_format($rs['PRO_PRICE'],2)."</td>";
+			echo "<td align='left'> ".$rs['pro_name']."</td>";
+			echo "<td align='right'>".number_format($rs['pro_price'],2)."</td>";
 			echo "<td align='center'>";
 			echo "<input name='txtqty$i' type='text' value='".$_SESSION['strqty'][$i]."' size='4' style='text-align: center;' autocomplete='off'/>";
 			echo "<input type='submit' hidden /><input type='hidden' value='1' name='ty' /></td>";
@@ -82,13 +82,13 @@ function setFocus() {
 	$sql = "select max(reserve_id)+1 as max from reserve";
 	$query = mysqli_query($conn, $sql);
 	$new_reserve_id = mysqli_fetch_array($query);
-	if(@$new_reserve_id["MAX"] == null)
+	if(@$new_reserve_id["max"] == null)
 	{
 		$reserve_id = "0000001";
 	}
 	else
 	{
-		$reserve_id = sprintf("%07d", $new_reserve_id["MAX"]);
+		$reserve_id = sprintf("%07d", $new_reserve_id["max"]);
 	}
 ?>
 

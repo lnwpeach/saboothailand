@@ -26,7 +26,7 @@
 	$mthai[10] = "ตุลาคม";
 	$mthai[11] = "พฤศจิกายน";
 	$mthai[12] = "ธันวาคม";
-	$date = date('j ').$meng[date('n')].date(' Y');
+	$date = date('Y-m-d');
 ?>
 <div class="main">
 	<h2>สรุปยอดขายรายวัน</h2>
@@ -69,7 +69,7 @@
 		$d = intval(substr($_POST['date'], 8, 2));
 		$m = intval(substr($_POST['date'], 5, 2));
 		$y = intval(substr($_POST['date'], 0, 4));
-		$date = $d." ".$meng[$m]." ".$y;
+		$date = $_POST['date'];
 		$message = "สรุปยอดขายวันที่ ".$d." ".$mthai[$m]." ".$y;
 		if($_POST['emp_id']) {
 			$qemp = "and emp_id = '".$_POST['emp_id']."'";
@@ -80,9 +80,9 @@
 	$sql = "select sd.pro_id, sum(sd.pro_sell_qty) as qty, sum(sd.pro_sell_qty * p.pro_price) as sum from sale_detail sd join ";
 	$sql .= "product p on sd.pro_id = p.pro_id join sale s on sd.sale_id = s.sale_id where s.sale_date = '$date' $qemp group by sd.pro_id order by sd.pro_id";
 	$query = mysqli_query($conn, $sql);
-	$rs = mysqli_fetch_array($query);
+	$rs = mysqli_num_rows($query);
 	$total = 0;
-	if($rs[0] == null)
+	if($rs == 0)
 	{
 		echo "<h3 style='margin-left: 10%;color: red'>ไม่มีข้อมูล</h3>";
 	}
@@ -106,19 +106,19 @@
 		$sumtotal = 0;
 		while($rs = mysqli_fetch_array($query))
 		{
-			$sql2 = "select p.pro_name, p.pro_price from sale_detail sd join product p on sd.pro_id = p.pro_id where sd.pro_id = '".$rs["PRO_ID"]."'";
+			$sql2 = "select p.pro_name, p.pro_price from sale_detail sd join product p on sd.pro_id = p.pro_id where sd.pro_id = '".$rs["pro_id"]."'";
 			$query2 = mysqli_query($conn, $sql2);
 			$rs2 = mysqli_fetch_array($query2);
 			$num2 += 1;
-			$sumtotal += $rs["SUM"];
+			$sumtotal += $rs["sum"];
 ?>
 <tr>
 <td align="center"><?php echo $num2;?></td>
-<td align="center"><?php echo $rs["PRO_ID"];?></td>
-<td align="left">&nbsp;<?php echo $rs2["PRO_NAME"];?></td>
-<td align="right"><?php echo number_format($rs2["PRO_PRICE"],2);?></td>
-<td align="center"><?php echo $rs["QTY"];?></td>
-<td align="right"><?php echo number_format($rs["SUM"],2);?></td>
+<td align="center"><?php echo $rs["pro_id"];?></td>
+<td align="left">&nbsp;<?php echo $rs2["pro_name"];?></td>
+<td align="right"><?php echo number_format($rs2["pro_price"],2);?></td>
+<td align="center"><?php echo $rs["qty"];?></td>
+<td align="right"><?php echo number_format($rs["sum"],2);?></td>
 </tr>
 <?php
 		}

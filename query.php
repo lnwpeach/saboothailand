@@ -14,28 +14,28 @@
 <?php
 	include "menu_sale.php";
 
-	$qsql[1] = "select s.sale_id, e.emp_name, e.emp_lname from sale s join employee e on(s.emp_id = e.emp_id) where sale_date = '9 may 2018'";
+	$qsql[1] = "select s.sale_id, e.emp_name, e.emp_lname from sale s join employee e on(s.emp_id = e.emp_id) where sale_date = '18-05-09'";
 	$qsql[2] = "select distinct cust_name, cust_lname from customer c join reserve r on(c.cust_id = r.cust_id) where r.status = 'รอชำระเงิน'";
-	$qsql[3] = "select p.pro_id, p.pro_name from \"6006021410172\".product p join sale_detail sd on(sd.pro_id = p.pro_id)
+	$qsql[3] = "select p.pro_id, p.pro_name from product p join sale_detail sd on(sd.pro_id = p.pro_id)
 join sale s on(s.sale_id = sd.sale_id) where s.sale_date between '1 jan 2018' and '31 jan 2018'";
 	$qsql[4] = "select distinct e.emp_name, p.pro_name from employee e join sale s on(e.emp_id = s.emp_id) join sale_detail sd on(s.sale_id = sd.sale_id)
-join \"6006021410172\".product p on(sd.pro_id = p.pro_id) where s.sale_date > '1 april 2018'";
+join product p on(sd.pro_id = p.pro_id) where s.sale_date > '1 april 2018'";
 	$qsql[5] = "select sd.pro_id, sum(sd.pro_sell_qty) as qty from sale_detail sd join sale s on sd.sale_id = s.sale_id group by sd.pro_id order by sd.pro_id";
 	$qsql[6] = "select count(sale_id) from sale";
-	$qsql[7] = "select avg(pro_price) as avg from \"6006021410172\".product";
-	$qsql[8] = "select pro_name from \"6006021410172\".product where pro_id in(select pro_id from sale_detail having(sum(pro_sell_qty) >
+	$qsql[7] = "select avg(pro_price) as avg from product";
+	$qsql[8] = "select pro_name from product where pro_id in(select pro_id from sale_detail having(sum(pro_sell_qty) >
 (select avg(pro_sell_qty) from sale_detail)) group by pro_id)";
 	$qsql[9] = "select reserve_id, status from reserve where status = (select status from reserve where reserve_id = '0000010')";
 	$qsql[10] = "select emp_name from employee where emp_id in(select emp_id from sale having count(emp_id) >
 (select avg(count(emp_id)) from sale group by emp_id) group by emp_id)";
-	$qsql[11] = "select pro_name from \"6006021410172\".product where pro_id in(select pro_id from sale_detail having(sum(pro_sell_qty) > 10) group by pro_id)";
-	$qsql[12] = "select type_id, max(pro_qty) as max_pro_qty from \"6006021410172\".product group by type_id";
+	$qsql[11] = "select pro_name from product where pro_id in(select pro_id from sale_detail having(sum(pro_sell_qty) > 10) group by pro_id)";
+	$qsql[12] = "select type_id, max(pro_qty) as max_pro_qty from product group by type_id";
 	$qsql[13] = "select * from emp_view";
 	$qsql[14] = "select * from sumpro_view";
 	$qsql[15] = "select emp_name from employee where emp_name like 'อ%'";
 	$qsql[16] = "select distinct sale_id from sale_detail order by sale_id desc";
-	$qsql[17] = "select pro_name from \"6006021410172\".product where pro_name like '%นม'";
-	$qsql[18] = "select p.type_id, count(sd.pro_id) as qty from sale_detail sd join \"6006021410172\".product p on sd.pro_id = p.pro_id group by p.type_id order by p.type_id";
+	$qsql[17] = "select pro_name from product where pro_name like '%นม'";
+	$qsql[18] = "select p.type_id, count(sd.pro_id) as qty from sale_detail sd join product p on sd.pro_id = p.pro_id group by p.type_id order by p.type_id";
 	$qsql[19] = "select count(cust_id) as Number_of_customer from reserve where status = 'รอชำระเงิน'";
 	$qsql[20] = "select emp_name from employee where emp_id = (select emp_id from sale having(count(emp_id) =
 (select max(count(emp_id)) from sale group by emp_id)) group by emp_id)";
@@ -76,11 +76,10 @@ join \"6006021410172\".product p on(sd.pro_id = p.pro_id) where s.sale_date > '1
 			if($_GET['query'] == $i)
 				$sql = $qsql[$i];
 		}
-		$parse = oci_parse($conn, $sql);
-		oci_execute($parse, OCI_DEFAULT);
-		$rs = oci_fetch_array($parse, OCI_BOTH);
+		$query = mysqli_query($conn, $sql);
+		$rs = mysqli_num_rows($query);
 
-	if($rs[0] == null) {
+	if($rs == 0) {
 		echo "<h3 style='margin-left: 10%;color: red'>ไม่มีข้อมูล</h3>";
 	}
 	?>
@@ -88,23 +87,22 @@ join \"6006021410172\".product p on(sd.pro_id = p.pro_id) where s.sale_date > '1
 	<form name='edit' action="sale_edit_cust.php" method="post">
   <table width="" border="1" align="center" cellpadding="2" cellspacing="0" id="table">
   <?php
-  $numfield = oci_num_fields($parse);
-  echo "<tr>";
-  for($i=1;$i<=$numfield;$i++) {
-    echo "<th height='35'>".oci_field_name($parse, $i)."</th>";
-  }
-  echo "</tr>";
-	oci_execute($parse, OCI_DEFAULT);
-	while($rs = oci_fetch_array($parse, OCI_BOTH)) {
 		echo "<tr>";
-    for($i=0;$i<$numfield;$i++) {
-      echo "<td height='25' align='center'>".@$rs[$i]."</td>";
-    }
+		while($field = mysqli_fetch_field($query)) {
+			echo "<th height='35'>".$field->name."</th>";
+		}
 		echo "</tr>";
+		$query = mysqli_query($conn, $sql);
+		while($rs = mysqli_fetch_array($query)) {
+			echo "<tr>";
+			for($i=0;$i<=count((array)$field);$i++) {
+				echo "<td height='25' align='center'>".@$rs[$i]."</td>";
+			}
+			echo "</tr>";
+		}
+		echo "</table>";
+		echo "</form>";
 	}
-	echo "</table>";
-	echo "</form>";
-}
 	?>
 </div>
 <?php
