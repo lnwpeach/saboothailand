@@ -2,7 +2,7 @@
 	ob_start();
 	include "connect.php";
 
-	if($_GET['ty'] == 1)
+	if(isset($_GET['ty']) && $_GET['ty'] == 1)
 		$h = "location:sale_pro_reserve.php";
 	else
 		$h = "location:sale_pro_sell.php";
@@ -13,15 +13,15 @@
 	}
 	else
 	{
-		$sql = "select * from product where PRO_ID = '".$_GET["txtkeyword"]."'";
+		$sql = "select * from product where pro_id = '".$_GET["txtkeyword"]."'";
 		$query = mysqli_query($conn, $sql);
 		$rs = mysqli_fetch_array($query);
-		if($_GET["txtkeyword"] == $rs["PRO_ID"])
+		if($_GET["txtkeyword"] == $rs["pro_id"])
 		{
 			if(!isset($_SESSION["intline"]))
 			{
 				$_SESSION["intline"] = 0;
-				$_SESSION["strpro_id"][0] = $rs["PRO_ID"];
+				$_SESSION["strpro_id"][0] = $rs["pro_id"];
 				$_SESSION["strqty"][0] = 1;
 				$_SESSION["total"][0] = 0;
 				header($h);
@@ -38,7 +38,7 @@
 				{
 					$_SESSION["intline"] += 1;
 					$intnewline = $_SESSION["intline"];
-					$_SESSION["strpro_id"][$intnewline] = $rs["PRO_ID"];
+					$_SESSION["strpro_id"][$intnewline] = $rs["pro_id"];
 					$_SESSION["strqty"][$intnewline] = 1;
 					header($h);
 				}

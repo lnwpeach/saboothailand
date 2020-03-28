@@ -35,17 +35,16 @@
     </table>
   </form>
 	<?php
-	$sql = "select * from sale where sale_date between sysdate - 7 and sysdate order by sale_date desc, sale_time desc";
+	$sql = "select * from sale where sale_date between '".date('Y-m-d', strtotime("-1 week"))."' and '".date('Y-m-d')."' order by sale_date desc, sale_time desc";
 	if(@$_GET['sale_id'] != "") {
 		$sql = "select * from sale where sale_id = '".$_GET['sale_id']."' order by sale_date desc, sale_time desc";
 	}
 	else if(isset($_GET['stdate']) && isset($_GET['eddate'])) {
-		$sql = "select * from sale where sale_date between to_date('".$_GET['stdate']."', 'yyyy-mm-dd') and to_date('".$_GET['eddate']."', 'yyyy-mm-dd') order by sale_date desc, sale_time desc";
+		$sql = "select * from sale where sale_date between '".$_GET['stdate']."' and '".$_GET['eddate']."' order by sale_date desc, sale_time desc";
 	}
 	$query = mysqli_query($conn, $sql);
-	$rs = mysqli_fetch_array($query);
 
-  if($rs[0] == null) {
+  if(mysqli_num_rows($query) == 0) {
     echo "<h3 style='margin-left: 10%;color: red'>ไม่มีข้อมูล</h3>";
   }
   else {

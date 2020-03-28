@@ -6,7 +6,7 @@
 	$query = mysqli_query($conn, $sql);
 
 	if($query) {
-		oci_commit();
+		// oci_commit();
 		header("location:sale_cust.php");
 	}
 	else {

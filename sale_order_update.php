@@ -5,7 +5,7 @@
   $change = $_POST["change"];
   $sale_id = $_POST['sale_id'];
 
-  $sale_date = date("j ").$meng[date("n")].date(" Y");
+  $sale_date = date("Y-m-d");
 
   $sql = "insert into sale values ('".$_POST['sale_id']."','$sale_date','".date("H:i")."','".$_SESSION['emp_id']."')";
   $query = mysqli_query($conn, $sql) or die("Can't insert sale = ".$sql);
